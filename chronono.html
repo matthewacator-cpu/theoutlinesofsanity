@@ -1,0 +1,815 @@
+
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CHRONOS ULTIMATE v2 — Time Reclamation System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Space Mono', monospace;
+    }
+/* Smooth number transitions */
+.number-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hide number spinners */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Input focus states */
+input:focus, select:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 1px 0 0 rgba(16, 185, 129, 0.7);
+}
+
+/* Collapsible sections */
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+.collapsible-content.open {
+    max-height: 2000px;
+    transition: max-height 0.5s ease-in;
+}
+
+/* Pulse animation for live counters */
+@keyframes pulse-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+.pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Grid cell styling */
+.life-week {
+    width: 8px;
+    height: 8px;
+    margin: 1px;
+    border-radius: 1px;
+    transition: all 0.2s;
+}
+.life-week:hover {
+    transform: scale(1.5);
+    z-index: 10;
+}
+
+/* Quote styling */
+.book-quote {
+    border-left: 3px solid rgba(16, 185, 129, 0.5);
+    padding-left: 1rem;
+    font-style: italic;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Button effects */
+.kill-button {
+    transition: all 0.2s;
+}
+.kill-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+.kill-button:active {
+    transform: scale(0.95);
+}
+
+</style></head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+<div class="max-w-4xl mx-auto px-4 py-10 flex flex-col space-y-10">
+<!-- Header -->
+<div class="text-center">
+    <h1 class="text-2xl md:text-3xl tracking-widest uppercase opacity-70 mt-8">
+        CHRONOS ULTIMATE v2
+    </h1>
+    <p class="text-xs tracking-wider text-gray-500 mt-2">TIME RECLAMATION SYSTEM</p>
+</div>
+
+<!-- Core Data Input Section -->
+<div class="space-y-6">
+    <button onclick="toggleSection('coreData')" class="w-full text-left text-xs uppercase tracking-widest text-gray-400 hover:text-emerald-400 transition-colors">
+        ▼ CORE LIFE DATA
+    </button>
+    <div id="coreData" class="collapsible-content open">
+        <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl shadow-xl space-y-6">
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Current age</label>
+                <input type="number" id="age" value="34" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-cyan-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Expected death age</label>
+                <input type="number" id="death" value="81.6" step="0.1" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-cyan-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Age you expect to still feel healthy & alive</label>
+                <input type="number" id="healthy" value="78" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-cyan-400 p-0 outline-none number-transition">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Financial Data Section -->
+<div class="space-y-6">
+    <button onclick="toggleSection('financialData')" class="w-full text-left text-xs uppercase tracking-widest text-gray-400 hover:text-emerald-400 transition-colors">
+        ▼ FINANCIAL DATA
+    </button>
+    <div id="financialData" class="collapsible-content open">
+        <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl shadow-xl space-y-6">
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Monthly take-home pay (after tax)</label>
+                <input type="number" id="income" value="4500" step="100" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-emerald-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Monthly essential spending (rent, bills, food)</label>
+                <input type="number" id="essentials" value="2000" step="100" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-red-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Current savings / investments</label>
+                <input type="number" id="currentSavings" value="50000" step="1000" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-emerald-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Current total debt</label>
+                <input type="number" id="debt" value="17174" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-yellow-400 p-0 outline-none number-transition">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Average interest rate on debt (%)</label>
+                <input type="number" id="rate" value="4.4" step="0.1" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-yellow-400 p-0 outline-none number-transition">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- THE MORTALITY GRID -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">YOUR LIFE IN WEEKS</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <div class="text-center mb-4">
+            <div class="text-sm text-gray-400 mb-2">Each square = 1 week of your life</div>
+            <div class="flex justify-center gap-4 text-xs">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-gray-700 rounded"></div>
+                    <span>Lived</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-cyan-500 rounded"></div>
+                    <span>Healthy</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-red-900/50 rounded"></div>
+                    <span>Borrowed</span>
+                </div>
+            </div>
+        </div>
+        <div id="lifeGrid" class="flex flex-wrap justify-center max-w-2xl mx-auto"></div>
+        <div id="gridHover" class="text-center text-xs text-gray-500 mt-4 h-5"></div>
+    </div>
+</div>
+
+<!-- REMAINING CONSCIOUS HOURS -->
+<div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-center">
+    <div class="text-6xl md:text-7xl font-bold tracking-tighter text-emerald-400 drop-shadow-lg number-transition" id="hoursLeft">361,913</div>
+    <div class="text-sm opacity-75 mt-2">conscious healthy hours remaining on earth</div>
+    <div class="book-quote text-xs text-gray-400 mt-4 max-w-xl mx-auto">
+        "Time is the only currency that matters, and you're trading it at a loss."<br>
+        <span class="text-emerald-500">— The Working-Class Buddha, Chapter 2</span>
+    </div>
+</div>
+
+<!-- LIVE DEBT GROWTH COUNTER -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">THE DEBT PARASITE — LIVE GROWTH</h2>
+    <div class="p-6 bg-gray-800/50 border border-red-900/30 rounded-2xl text-center">
+        <div class="text-5xl font-bold tracking-tighter text-red-400 number-transition mb-2" id="currentDebt">$17,174.00</div>
+        <div class="text-xs text-gray-400 mb-4">Current debt balance</div>
+        
+        <div class="bg-red-950/30 p-4 rounded-lg mb-4">
+            <div class="text-lg text-red-300 pulse-glow">+$<span id="debtGrown">0.00</span></div>
+            <div class="text-xs text-gray-500 mt-1">has grown since you opened this page</div>
+        </div>
+        
+        <div class="text-sm text-gray-400">
+            At <span class="text-yellow-400" id="interestDisplay">4.4%</span> interest, your debt grows <span class="text-red-400" id="debtPerSecond">$0.024</span>/second
+        </div>
+        
+        <div class="book-quote text-xs text-gray-400 mt-4 max-w-xl mx-auto">
+            "When you borrow money, you're not borrowing money. You're borrowing time from the end of your life."<br>
+            <span class="text-yellow-500">— The Working-Class Buddha, Chapter 3</span>
+        </div>
+    </div>
+</div>
+
+<!-- SOVEREIGNTY SCORE -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">SOVEREIGNTY SCORE — YOUR FREEDOM LEVEL</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-center">
+        <div id="sovereigntyScore" class="text-7xl md:text-8xl font-bold tracking-tighter text-yellow-400 drop-shadow-lg number-transition">0</div>
+        <div id="sovereigntyStatus" class="text-sm opacity-75 mt-2 uppercase">CALCULATING</div>
+        
+        <div class="book-quote text-xs text-gray-400 mt-4 max-w-xl mx-auto">
+            "The ultimate thief isn't the boss, the bank, or the algorithm. It's you."<br>
+            <span class="text-cyan-500">— The Working-Class Buddha, Chapter 6</span>
+        </div>
+    </div>
+</div>
+
+<!-- FUCK-YOU FUND LEVELS -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">THE FUCK-YOU FUND — PATH TO SOVEREIGNTY</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <div class="space-y-4" id="fyFundLevels"></div>
+        
+        <div class="book-quote text-xs text-gray-400 mt-6 max-w-xl mx-auto">
+            "Zero debt is the blank slate. It's the moment your future becomes yours again."<br>
+            <span class="text-emerald-500">— The Working-Class Buddha, Chapter 3</span>
+        </div>
+    </div>
+</div>
+
+<!-- FREEDOM DATE COUNTER -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">FREEDOM DATE — THE ESCAPE VECTOR</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl text-center">
+        <div class="text-4xl md:text-5xl font-bold tracking-tight text-cyan-400 drop-shadow-lg number-transition" id="freedomDateOutput">CALCULATING...</div>
+        <div class="text-sm opacity-75 mt-2 mb-4">Projected financial sovereignty date</div>
+        <div id="countdown" class="text-lg text-gray-400">—</div>
+    </div>
+</div>
+
+<!-- SUBSCRIPTION ASSASSIN -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">SUBSCRIPTION ASSASSIN — KILL THE LEECHES</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <div class="mb-4">
+            <div class="flex gap-2 mb-2">
+                <input type="text" id="subName" placeholder="Subscription name" class="flex-1 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm">
+                <input type="number" id="subCost" placeholder="$/month" class="w-24 bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm">
+                <button onclick="addSubscription()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded text-sm font-bold transition-colors">ADD</button>
+            </div>
+        </div>
+        
+        <div id="subscriptionList" class="space-y-2 mb-4"></div>
+        
+        <div class="bg-gray-900/50 p-4 rounded-lg text-center">
+            <div class="text-xs text-gray-400 mb-1">TOTAL MONTHLY DRAIN</div>
+            <div class="text-3xl font-bold text-red-400" id="totalSubCost">$0.00</div>
+            <div class="text-xs text-gray-500 mt-1">= <span id="subHoursYear" class="text-yellow-400">0</span> hours/year</div>
+        </div>
+        
+        <div class="bg-emerald-950/30 p-4 rounded-lg text-center mt-4">
+            <div class="text-xs text-gray-400 mb-1">LIFE RECLAIMED BY KILLING SUBS</div>
+            <div class="text-2xl font-bold text-emerald-400" id="lifeReclaimed">0 days</div>
+        </div>
+    </div>
+</div>
+
+<!-- LIFE SWAP BAR -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">LIFE SWAP — YEARS TRADED MONTHLY</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <div class="text-5xl md:text-6xl font-bold tracking-tighter text-red-500 drop-shadow-lg number-transition" id="yearsSwap">0.005</div>
+        <div class="text-sm opacity-75 mt-2 mb-6">years sacrificed every month for non-essentials</div>
+        
+        <div class="h-8 bg-gray-700 rounded-full overflow-hidden mb-4 flex" id="swapBar"></div>
+        
+        <div class="flex justify-between text-xs opacity-70">
+            <span id="workLabel" class="text-red-400"></span>
+            <span id="leisureLabel" class="text-red-600"></span>
+        </div>
+        
+        <div class="book-quote text-xs text-gray-400 mt-6 max-w-xl mx-auto">
+            "Every pound you save is a pound of your time bought back."<br>
+            <span class="text-emerald-500">— The Working-Class Buddha, Chapter 12</span>
+        </div>
+    </div>
+</div>
+
+<!-- INCOME PIE -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">INCOME PIE — WHERE YOUR SOUL GOES</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <canvas id="pie" width="460" height="460" class="max-w-full mx-auto"></canvas>
+        <div class="legend flex flex-wrap gap-4 justify-center mt-4 text-xs opacity-90" id="legend"></div>
+    </div>
+</div>
+
+<!-- ONE PURCHASE CALCULATOR -->
+<div class="space-y-6">
+    <h2 class="text-xs tracking-widest uppercase opacity-50">ONE PURCHASE — COST IN LIFE</h2>
+    <div class="p-6 bg-gray-800/50 border border-gray-700/50 rounded-2xl">
+        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">Price ($)</label>
+        <input type="number" id="cost" placeholder="0.00" step="1" class="w-full bg-transparent border-none border-b border-gray-600 text-3xl text-white p-0 outline-none mb-6">
+        
+        <label class="block text-xs uppercase tracking-widest text-gray-400 mb-2">What is it?</label>
+        <input type="text" id="item" placeholder="optional (e.g., new gaming rig)" class="w-full bg-transparent border-none border-b border-gray-600 text-lg text-white p-0 outline-none mb-6">
+        
+        <div class="text-2xl md:text-3xl font-bold tracking-tight mt-6 h-10 number-transition" id="oneResult">—</div>
+        
+        <div class="book-quote text-xs text-gray-400 mt-6 max-w-xl mx-auto">
+            "That £15 takeaway? At £11.95/hour, that's 75 minutes of your life."<br>
+            <span class="text-red-500">— The Working-Class Buddha, Chapter 2</span>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="text-xs text-center opacity-30 mt-10 pb-4">
+    CHRONOS ULTIMATE v2 • Based on "The Working-Class Buddha" • One file • No servers • No mercy • 2025
+</div>
+
+</div>
+
+<script>
+// ============================================================================
+// GLOBAL STATE
+// ============================================================================
+const $ = id => document.getElementById(id);
+let debounceTimer;
+let countdownInterval;
+let debtGrowthInterval;
+let pageOpenTime = Date.now();
+let subscriptions = [];
+
+// ============================================================================
+// SECTION TOGGLE
+// ============================================================================
+function toggleSection(id) {
+    const el = $(id);
+    el.classList.toggle('open');
+}
+
+// ============================================================================
+// MAIN UPDATE FUNCTION
+// ============================================================================
+function updateAll() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        // Get values
+        const age = parseFloat($('age').value) || 0;
+        const death = parseFloat($('death').value) || 81.6;
+        const healthy = parseFloat($('healthy').value) || 78;
+        const income = parseFloat($('income').value) || 0;
+        const essentials = parseFloat($('essentials').value) || 0;
+        const currentSavings = parseFloat($('currentSavings').value) || 0;
+        const debt = parseFloat($('debt').value) || 0;
+        const rate = parseFloat($('rate').value) || 0;
+        const cost = parseFloat($('cost').value) || 0;
+        
+        // Core calculations
+        const hourlyRate = income / 160;
+        const annualEssentials = essentials * 12;
+        const interestMonthly = debt * (rate / 100) / 12;
+        const monthlySurplus = Math.max(0, income - essentials - interestMonthly);
+        const freedomNetWorthTarget = annualEssentials / 0.04;
+        
+        // Update sections
+        updateMortalityGrid(age, death, healthy);
+        updateRemainingHours(age, healthy);
+        updateDebtGrowth(debt, rate);
+        updateSovereigntyScore(currentSavings, freedomNetWorthTarget, monthlySurplus, income);
+        updateFYFundLevels(essentials, currentSavings);
+        updateFreedomDate(currentSavings, freedomNetWorthTarget, monthlySurplus);
+        updateLifeSwap(income, essentials, hourlyRate);
+        updateIncomePie(income, essentials, interestMonthly);
+        updateOnePurchase(cost, hourlyRate, age, healthy);
+        updateSubscriptionTotals(hourlyRate);
+        
+    }, 100);
+}
+
+// ============================================================================
+// MORTALITY GRID
+// ============================================================================
+function updateMortalityGrid(age, death, healthy) {
+    const grid = $('lifeGrid');
+    const totalWeeks = Math.round(death * 52);
+    const weeksLived = Math.round(age * 52);
+    const weeksHealthy = Math.round(healthy * 52);
+    
+    grid.innerHTML = '';
+    
+    for (let i = 0; i < totalWeeks; i++) {
+        const week = document.createElement('div');
+        week.className = 'life-week';
+        
+        if (i < weeksLived) {
+            week.style.backgroundColor = '#374151'; // gray-700
+        } else if (i < weeksHealthy) {
+            week.style.backgroundColor = '#06b6d4'; // cyan-500
+        } else {
+            week.style.backgroundColor = 'rgba(127, 29, 29, 0.5)'; // red-900/50
+        }
+        
+        const weekAge = (i / 52).toFixed(1);
+        const year = Math.floor(2025 + (i - weeksLived) / 52);
+        
+        week.onmouseenter = () => {
+            $('gridHover').textContent = `Week ${i + 1} • Age ${weekAge} • Year ${year}`;
+        };
+        week.onmouseleave = () => {
+            $('gridHover').textContent = '';
+        };
+        
+        grid.appendChild(week);
+    }
+}
+
+// ============================================================================
+// REMAINING HOURS
+// ============================================================================
+function updateRemainingHours(age, healthy) {
+    const healthyYears = Math.max(0, healthy - age);
+    const totalHealthyHours = healthyYears * 365.25 * 16.5;
+    animateNumber($('hoursLeft'), totalHealthyHours, 0, true);
+}
+
+// ============================================================================
+// DEBT GROWTH COUNTER
+// ============================================================================
+function updateDebtGrowth(debt, rate) {
+    const debtPerSecond = (debt * (rate / 100)) / (365.25 * 24 * 60 * 60);
+    
+    $('currentDebt').textContent = '$' + debt.toFixed(2).toLocaleString();
+    $('interestDisplay').textContent = rate + '%';
+    $('debtPerSecond').textContent = '$' + debtPerSecond.toFixed(3);
+    
+    // Start live counter
+    if (debtGrowthInterval) clearInterval(debtGrowthInterval);
+    
+    if (debt > 0 && rate > 0) {
+        const startTime = Date.now();
+        debtGrowthInterval = setInterval(() => {
+            const elapsed = (Date.now() - startTime) / 1000;
+            const grown = debtPerSecond * elapsed;
+            $('debtGrown').textContent = grown.toFixed(2);
+        }, 100);
+    } else {
+        $('debtGrown').textContent = '0.00';
+    }
+}
+
+// ============================================================================
+// SOVEREIGNTY SCORE
+// ============================================================================
+function updateSovereigntyScore(currentSavings, freedomNetWorthTarget, monthlySurplus, income) {
+    const netWorthRatio = Math.min(1, currentSavings / freedomNetWorthTarget);
+    const surplusRatio = income > 0 ? Math.min(1, monthlySurplus / income) : 0;
+    const score = Math.round((netWorthRatio * 60) + (surplusRatio * 40));
+    
+    let statusText = "INITIAL CALIBRATION";
+    let statusColor = "text-yellow-400";
+    
+    if (score >= 100) {
+        statusText = "SOVEREIGN: FINANCIALLY FREE";
+        statusColor = "text-emerald-400";
+    } else if (score >= 75) {
+        statusText = "GOLD: NEAR ESCAPE VELOCITY";
+        statusColor = "text-yellow-300";
+    } else if (score >= 50) {
+        statusText = "SILVER: BREAKING EVEN";
+        statusColor = "text-cyan-400";
+    } else if (score >= 25) {
+        statusText = "BRONZE: BUILDING MOMENTUM";
+        statusColor = "text-orange-400";
+    } else if (score > 0) {
+        statusText = "DEBT ACQUIRED";
+        statusColor = "text-red-400";
+    }
+    
+    animateNumber($('sovereigntyScore'), score, 0);
+    $('sovereigntyScore').className = `text-7xl md:text-8xl font-bold tracking-tighter ${statusColor} drop-shadow-lg number-transition`;
+    $('sovereigntyStatus').textContent = statusText;
+}
+
+// ============================================================================
+// FUCK-YOU FUND LEVELS
+// ============================================================================
+function updateFYFundLevels(essentials, currentSavings) {
+    const levels = [
+        { name: '1-Month Buffer', months: 1, color: 'red' },
+        { name: '3-Month Cushion', months: 3, color: 'orange' },
+        { name: '6-Month Shield', months: 6, color: 'yellow' },
+        { name: '1-Year Freedom', months: 12, color: 'cyan' },
+        { name: 'Full Sovereignty (4% Rule)', months: essentials * 12 / 0.04 / essentials, color: 'emerald' }
+    ];
+    
+    const container = $('fyFundLevels');
+    container.innerHTML = '';
+    
+    levels.forEach((level, i) => {
+        const target = level.months * essentials;
+        const achieved = currentSavings >= target;
+        const progress = Math.min(100, (currentSavings / target) * 100);
+        
+        const div = document.createElement('div');
+        div.className = `p-4 rounded-lg border ${achieved ? 'bg-emerald-950/20 border-emerald-500/50' : 'bg-gray-900/30 border-gray-700'}`;
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <div class="font-bold ${achieved ? 'text-emerald-400' : 'text-gray-400'}">${achieved ? '✓' : '○'} ${level.name}</div>
+                <div class="text-sm ${achieved ? 'text-emerald-400' : 'text-gray-500'}">$${target.toLocaleString()}</div>
+            </div>
+            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div class="h-full bg-${level.color}-500 transition-all duration-500" style="width: ${progress}%"></div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">${progress.toFixed(0)}% complete</div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ============================================================================
+// FREEDOM DATE
+// ============================================================================
+function updateFreedomDate(currentSavings, freedomNetWorthTarget, monthlySurplus) {
+    const savingsGap = freedomNetWorthTarget - currentSavings;
+    
+    if (countdownInterval) clearInterval(countdownInterval);
+    
+    if (savingsGap <= 0) {
+        $('freedomDateOutput').textContent = 'NOW';
+        $('countdown').textContent = 'You have reached financial sovereignty.';
+        return;
+    }
+    
+    if (monthlySurplus <= 0) {
+        $('freedomDateOutput').textContent = 'NEVER';
+        $('countdown').textContent = 'Monthly surplus is zero or negative. Increase income or cut spending.';
+        return;
+    }
+    
+    const monthsToFreedom = savingsGap / monthlySurplus;
+    const daysToFreedom = monthsToFreedom * 30.44;
+    const millisecondsToFreedom = daysToFreedom * 24 * 60 * 60 * 1000;
+    const freedomDate = new Date(Date.now() + millisecondsToFreedom);
+    
+    $('freedomDateOutput').textContent = freedomDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    countdownInterval = setInterval(() => {
+        const remaining = freedomDate.getTime() - Date.now();
+        if (remaining <= 0) {
+            $('countdown').textContent = 'FREEDOM ACHIEVED.';
+            clearInterval(countdownInterval);
+            return;
+        }
+        
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        
+        $('countdown').innerHTML = `<span class="text-cyan-400">${days.toLocaleString()}</span> days / <span class="text-cyan-400">${hours}</span> hrs / <span class="text-cyan-400">${minutes}</span> min / <span class="text-cyan-400">${seconds}</span> sec`;
+    }, 1000);
+}
+
+// ============================================================================
+// SUBSCRIPTION MANAGEMENT
+// ============================================================================
+function addSubscription() {
+    const name = $('subName').value.trim();
+    const cost = parseFloat($('subCost').value) || 0;
+    
+    if (name && cost > 0) {
+        subscriptions.push({ name, cost, killed: false });
+        $('subName').value = '';
+        $('subCost').value = '';
+        renderSubscriptions();
+        updateAll();
+    }
+}
+
+function killSubscription(index) {
+    subscriptions[index].killed = true;
+    renderSubscriptions();
+    updateAll();
+}
+
+function renderSubscriptions() {
+    const list = $('subscriptionList');
+    list.innerHTML = '';
+    
+    subscriptions.forEach((sub, i) => {
+        if (!sub.killed) {
+            const div = document.createElement('div');
+            div.className = 'flex justify-between items-center p-3 bg-gray-900 rounded';
+            div.innerHTML = `
+                <div class="flex-1">
+                    <div class="font-bold text-sm">${sub.name}</div>
+                    <div class="text-xs text-gray-500">$${sub.cost}/month</div>
+                </div>
+                <button onclick="killSubscription(${i})" class="kill-button bg-red-600 hover:bg-red-500 px-3 py-1 rounded text-xs font-bold">
+                    KILL
+                </button>
+            `;
+            list.appendChild(div);
+        }
+    });
+}
+
+function updateSubscriptionTotals(hourlyRate) {
+    const active = subscriptions.filter(s => !s.killed);
+    const killed = subscriptions.filter(s => s.killed);
+    
+    const totalCost = active.reduce((sum, s) => sum + s.cost, 0);
+    const totalKilled = killed.reduce((sum, s) => sum + s.cost, 0);
+    
+    $('totalSubCost').textContent = '$' + totalCost.toFixed(2);
+    
+    if (hourlyRate > 0) {
+        const hoursPerYear = (totalCost * 12) / hourlyRate;
+        $('subHoursYear').textContent = hoursPerYear.toFixed(0);
+        
+        const killedHours = (totalKilled * 12) / hourlyRate;
+        const killedDays = killedHours / 16.5;
+        $('lifeReclaimed').textContent = killedDays.toFixed(1) + ' days';
+    }
+}
+
+// ============================================================================
+// LIFE SWAP
+// ============================================================================
+function updateLifeSwap(income, essentials, hourlyRate) {
+    if (income > 0 && essentials >= 0 && hourlyRate > 0) {
+        const nonEssential = Math.max(0, income - essentials);
+        const workHours = nonEssential / hourlyRate;
+        const leisureHours = workHours * 2.125;
+        const totalHours = workHours + leisureHours;
+        const yearsLost = totalHours / (365.25 * 16.5);
+        
+        animateNumber($('yearsSwap'), yearsLost, 4);
+        
+        if (nonEssential > 0) {
+            const workPct = (workHours / totalHours) * 100;
+            $('swapBar').innerHTML = `
+                <div class="h-full flex items-center justify-center font-bold text-sm px-2 bg-red-500 text-white" style="width:${workPct}%">${workHours.toFixed(0)}h Work</div>
+                <div class="h-full flex items-center justify-center font-bold text-sm px-2 bg-red-900 text-white" style="width:${100-workPct}%">${leisureHours.toFixed(0)}h Leisure</div>
+            `;
+            $('workLabel').textContent = `${workPct.toFixed(0)}% work time for non-essentials`;
+            $('leisureLabel').textContent = `${(100-workPct).toFixed(0)}% free time cost`;
+        } else {
+            $('swapBar').innerHTML = `<div class="h-full w-full flex items-center justify-center font-bold text-sm bg-emerald-500 text-gray-900">Living within means</div>`;
+            $('workLabel').textContent = '';
+            $('leisureLabel').textContent = '';
+        }
+    }
+}
+
+// ============================================================================
+// INCOME PIE
+// ============================================================================
+function updateIncomePie(income, essentials, debtInterest) {
+    const waste = Math.max(0, income - essentials - debtInterest);
+    
+    const labels = [];
+    const data = [];
+    const colors = [];
+    
+    if (essentials > 0) {
+        labels.push("Survival (must earn)");
+        data.push(essentials);
+        colors.push("#10b981");
+    }
+    if (debtInterest > 5) {
+        labels.push("Bank tribute");
+        data.push(debtInterest);
+        colors.push("#f59e0b");
+    }
+    if (waste > 0) {
+        labels.push("Chosen waste");
+        data.push(waste);
+        colors.push("#ef4444");
+    }
+    
+    const total = data.reduce((a, b) => a + b, 0);
+    drawPie(data, labels, colors, total);
+}
+
+function drawPie(data, labels, colors, total) {
+    const canvas = $('pie');
+    const size = 460;
+    canvas.width = size * 2;
+    canvas.height = size * 2;
+    const ctx = canvas.getContext('2d');
+    
+    ctx.scale(2, 2);
+    ctx.clearRect(0, 0, size, size);
+    
+    const centerX = size / 2;
+    const centerY = size / 2;
+    const radius = centerX * 0.9;
+    
+    let startAngle = 0;
+    
+    data.forEach((v, i) => {
+        const slice = (v / total) * Math.PI * 2;
+        const endAngle = startAngle + slice;
+        
+        ctx.fillStyle = colors[i];
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fill();
+        
+        startAngle = endAngle;
+    });
+    
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius * 0.5, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+    
+    let legend = '';
+    data.forEach((v, i) => {
+        const pct = (v / total * 100).toFixed(1);
+        legend += `<div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full" style="background:${colors[i]}"></div>
+            ${labels[i]} — $${v.toFixed(0)} (${pct}%)
+        </div>`;
+    });
+    $('legend').innerHTML = legend;
+}
+
+// ============================================================================
+// ONE PURCHASE
+// ============================================================================
+function updateOnePurchase(cost, hourlyRate, age, healthy) {
+    if (cost > 0 && hourlyRate > 0) {
+        const hours = cost / hourlyRate;
+        const totalHealthyHours = Math.max(0, healthy - age) * 365.25 * 16.5;
+        const percent = totalHealthyHours > 0 ? (hours / totalHealthyHours) * 100 : 0;
+        const days = hours / 16.5;
+        
+        $('oneResult').innerHTML = `<span class="text-emerald-400">${hours.toFixed(1)} hrs</span> • <span class="text-red-400">${percent.toFixed(4)}%</span> of life • <span class="text-yellow-400">${days.toFixed(1)} days</span>`;
+    } else {
+        $('oneResult').textContent = '—';
+    }
+}
+
+// ============================================================================
+// UTILITY: NUMBER ANIMATION
+// ============================================================================
+function animateNumber(element, target, decimals = 0, useCommas = false) {
+    const current = parseFloat(element.textContent.replace(/,/g, '')) || 0;
+    const diff = target - current;
+    const duration = 500;
+    const steps = 30;
+    const increment = diff / steps;
+    let step = 0;
+    
+    const interval = setInterval(() => {
+        step++;
+        const value = current + (increment * step);
+        
+        if (step >= steps) {
+            clearInterval(interval);
+            element.textContent = useCommas ? Math.round(target).toLocaleString() : target.toFixed(decimals);
+        } else {
+            element.textContent = useCommas ? Math.round(value).toLocaleString() : value.toFixed(decimals);
+        }
+    }, duration / steps);
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+document.querySelectorAll('input').forEach(el => el.addEventListener('input', updateAll));
+document.addEventListener('DOMContentLoaded', () => {
+    updateAll();
+    renderSubscriptions();
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (countdownInterval) clearInterval(countdownInterval);
+    if (debtGrowthInterval) clearInterval(debtGrowthInterval);
+});
+</script>
+
+</body>
+</html>
