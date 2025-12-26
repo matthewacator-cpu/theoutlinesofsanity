@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOVEREIGN - The Working Class Buddha Companion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Space Mono', monospace;
+    }
+    
+    /* Smooth transitions */
+    .number-transition {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Hide number spinners */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    
+    /* Focus states */
+    input:focus, select:focus {
+        outline: none;
+        border-color: transparent;
+        box-shadow: 0 1px 0 0 rgba(251, 191, 36, 0.7);
+    }
+    
+    /* Pulse animation */
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    /* Life grid cells */
+    .life-week {
+        width: 6px;
+        height: 6px;
+        margin: 1px;
+        border-radius: 1px;
+        transition: all 0.2s;
+    }
+    .life-week:hover {
+        transform: scale(2);
+        z-index: 10;
+    }
+    
+    /* Fade in animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    /* Kill button */
+    .kill-btn {
+        transition: all 0.2s;
+    }
+    .kill-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    }
+    .kill-btn:active {
+        transform: scale(0.95);
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1c1917;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #44403c;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #57534e;
+    }
+</style>
+</head>
+<body class="bg-stone-950 text-stone-100 min-h-screen">
+
+<!-- Mobile Menu Button -->
+<button id="menuBtn" class="fixed top-4 left-4 z-50 md:hidden bg-stone-900 p-3 rounded-lg border border-stone-800">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+</button>
+
+<!-- Sidebar Navigation -->
+<nav id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-stone-900 border-r border-stone-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 flex flex-col">
+    <!-- Header -->
+    <div class="p-6 border-b border-stone-800">
+        <h1 class="text-xl font-black uppercase tracking-tighter text-stone-100">Sovereign</h1>
+        <p class="text-[10px] uppercase tracking-widest text-stone-500">Working Class Buddha</p>
+    </div>
+    
+    <!-- Nav Items -->
+    <div class="flex-1 p-4 space-y-2 overflow-y-auto">
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="dashboard">
+            <span>📊</span> The Pulse
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="passport">
+            <span>🛡️</span> Passport
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="mortality">
+            <span>⏳</span> Mortality Grid
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="timebank">
+            <span>⏰</span> Time Bank
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="debt">
+            <span>💀</span> Debt Parasite
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="subscriptions">
+            <span>🗡️</span> Sub Assassin
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="morning">
+            <span>⚡</span> Morning Anchor
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="altar">
+            <span>💧</span> The Altar
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="reader">
+            <span>📖</span> The Manuscript
+        </button>
+        <button class="nav-item w-full flex items-center gap-3 px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all border-l-2" data-view="temple">
+            <span>🍺</span> The Temple
+        </button>
+    </div>
+    
+    <!-- Footer Widget -->
+    <div class="p-6 border-t border-stone-800">
+        <div class="bg-stone-950 p-4 rounded border border-stone-800">
+            <p class="text-[10px] text-stone-500 uppercase mb-1">Hourly Wage</p>
+            <p class="text-xl font-mono text-amber-500">£<span id="sidebarWage">0.00</span></p>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main id="content" class="md:ml-72 min-h-screen p-6 md:p-12">
+    <!-- Views will be injected here -->
+</main>
+
+<script>
+// ============================================================================
+// STATE MANAGEMENT
+// ============================================================================
+const state = {
+    user: {
+        age: 34,
+        death: 81.6,
+        healthy: 78,
+        wage: 0,
+        monthlyExpenses: 0,
+        savings: 0,
+        debt: 0,
+        rate: 4.4
+    },
+    morningChecklist: {
+        wake5am: false,
+        coffee: false,
+        silence: false,
+        noPhone: false
+    },
+    altarChecklist: {
+        eggs: false,
+        apple: false,
+        water: false
+    },
+    subscriptions: [],
+    currentView: 'dashboard'
+};
+
+// Load from localStorage
+const savedState = localStorage.getItem('sovereignState');
+if (savedState) {
+    Object.assign(state, JSON.parse(savedState));
+}
+
+// Save to localStorage
+function saveState() {
+    localStorage.setItem('sovereignState', JSON.stringify(state));
+    updateSidebarWage();
+}
+
+function updateSidebarWage() {
+    document.getElementById('sidebarWage').textContent = state.user.wage.toFixed(2);
+}
+
+// ============================================================================
+// NAVIGATION
+// ============================================================================
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+const content = document.getElementById('content');
+const navItems = document.querySelectorAll('.nav-item');
+
+menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+});
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const view = item.dataset.view;
+        state.currentView = view;
+        navItems.forEach(i => {
+            i.classList.remove('bg-stone-800', 'text-amber-500', 'border-amber-500');
+            i.classList.add('text-stone-400', 'border-transparent', 'hover:bg-stone-800/50');
+        });
+        item.classList.remove('text-stone-400', 'border-transparent', 'hover:bg-stone-800/50');
+        item.classList.add('bg-stone-800', 'text-amber-500', 'border-amber-500');
+        renderView(view);
+        sidebar.classList.add('-translate-x-full');
+        window.scrollTo(0, 0);
+    });
+});
+
+// ============================================================================
+// CALCULATIONS
+// ============================================================================
+function getFreedomMonths() {
+    if (!state.user.monthlyExpenses || state.user.monthlyExpenses === 0) return 0;
+    return (state.user.savings / state.user.monthlyExpenses).toFixed(1);
+}
+
+function getDebtHours() {
+    if (!state.user.wage || state.user.wage === 0) return 0;
+    return Math.round(state.user.debt / state.user.wage);
+}
+
+function getHealthyHours() {
+    const healthyYears = Math.max(0, state.user.healthy - state.user.age);
+    return Math.round(healthyYears * 365.25 * 16.5);
+}
+
+function getSovereigntyScore() {
+    const annualEssentials = state.user.monthlyExpenses * 12;
+    const freedomTarget = annualEssentials / 0.04;
+    const interestMonthly = state.user.debt * (state.user.rate / 100) / 12;
+    const monthlySurplus = Math.max(0, state.user.wage * 160 - state.user.monthlyExpenses - interestMonthly);
+    
+    const netWorthRatio = Math.min(1, state.user.savings / freedomTarget);
+    const surplusRatio = state.user.wage > 0 ? Math.min(1, monthlySurplus / (state.user.wage * 160)) : 0;
+    
+    return Math.round((netWorthRatio * 60) + (surplusRatio * 40));
+}
+
+function getSovereigntyStatus(score) {
+    if (score >= 100) return { text: "SOVEREIGN: FINANCIALLY FREE", color: "text-emerald-400" };
+    if (score >= 75) return { text: "GOLD: NEAR ESCAPE VELOCITY", color: "text-yellow-300" };
+    if (score >= 50) return { text: "SILVER: BREAKING EVEN", color: "text-cyan-400" };
+    if (score >= 25) return { text: "BRONZE: BUILDING MOMENTUM", color: "text-orange-400" };
+    return { text: "DEBT ACQUIRED", color: "text-red-400" };
+}
+
+// ============================================================================
+// VIEWS
+// ============================================================================
+
+function renderView(view) {
+    const views = {
+        dashboard: renderDashboard,
+        passport: renderPassport,
+        mortality: renderMortality,
+        timebank: renderTimebank,
+        debt: renderDebt,
+        subscriptions: renderSubscriptions,
+        morning: renderMorning,
+        altar: renderAltar,
+        reader: renderReader,
+        temple: renderTemple
+    };
+    
+    content.innerHTML = views[view] ? views[view]() : '<p>View not found</p>';
+    
+    // Attach event listeners after render
+    attachEventListeners(view);
+}
+
+function renderDashboard() {
+    const score = getSovereigntyScore();
+    const status = getSovereigntyStatus(score);
+    
+    return `
+        <div class="max-w-4xl mx-auto space-y-8 fade-in">
+            <header>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-stone-100">The Pulse</h2>
+                <p class="text-stone-500 font-mono text-sm">CURRENT STATUS: ${state.user.wage > 0 ? "OPERATIONAL" : "DATA REQUIRED"}</p>
+            </header>
+
+            <!-- Key Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-stone-900 border border-stone-800 p-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Freedom Fund</h3>
+                    <div class="text-4xl font-mono text-white">${getFreedomMonths()}</div>
+                    <p class="text-sm text-stone-400">Months Bought</p>
+                </div>
+                
+                <div class="bg-stone-900 border border-stone-800 p-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Death Pledge</h3>
+                    <div class="text-4xl font-mono text-red-400">${getDebtHours()}</div>
+                    <p class="text-sm text-stone-400">Hours Owed</p>
+                </div>
+                
+                <div class="bg-stone-900 border border-stone-800 p-6">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Conscious Hours</h3>
+                    <div class="text-4xl font-mono text-emerald-400">${getHealthyHours().toLocaleString()}</div>
+                    <p class="text-sm text-stone-400">Remaining</p>
+                </div>
+            </div>
+
+            <!-- Sovereignty Score -->
+            <div class="bg-stone-900 border border-stone-800 p-8 text-center">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-stone-500 mb-4">Sovereignty Score</h3>
+                <div class="text-7xl font-bold ${status.color} mb-2">${score}</div>
+                <p class="text-sm uppercase tracking-wide text-stone-400">${status.text}</p>
+            </div>
+
+            <!-- Quote -->
+            <div class="bg-stone-800/50 border border-stone-800 p-8 text-center">
+                <p class="font-serif text-xl italic text-stone-300 leading-relaxed max-w-2xl mx-auto">
+                    "We are the universe pretending to be poor, pretending to be lost, pretending to clock in and clock out."
+                </p>
+                <button onclick="navigate('reader')" class="mt-4 text-xs uppercase tracking-widest text-amber-500 hover:text-amber-400 border-b border-amber-500 pb-1">Read the Truth</button>
+            </div>
+        </div>
+    `;
+}
+
+function renderPassport() {
+    return `
+        <div class="max-w-xl mx-auto space-y-8 fade-in">
+            <header class="text-center space-y-2">
+                <div class="text-5xl">🛡️</div>
+                <h2 class="text-2xl font-black uppercase tracking-tighter text-white">Identity Papers</h2>
+                <p class="text-stone-500 text-xs font-mono uppercase">Required for all calculations</p>
+            </header>
+
+            <div class="space-y-6 bg-stone-900 p-8 border border-stone-800">
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Current Age</label>
+                    <input type="number" id="age" value="${state.user.age}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Expected Death Age</label>
+                    <input type="number" id="death" value="${state.user.death}" step="0.1" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Age You'll Still Feel Healthy</label>
+                    <input type="number" id="healthy" value="${state.user.healthy}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Hourly Wage (£)</label>
+                    <input type="number" id="wage" value="${state.user.wage}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Monthly Essentials (£)</label>
+                    <input type="number" id="monthlyExpenses" value="${state.user.monthlyExpenses}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                    <p class="text-[10px] text-stone-600">Rent + Bills + Food. The cost of survival.</p>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Current Savings (£)</label>
+                    <input type="number" id="savings" value="${state.user.savings}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Total Debt (£)</label>
+                    <input type="number" id="debt" value="${state.user.debt}" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase tracking-widest text-stone-500">Average Interest Rate (%)</label>
+                    <input type="number" id="rate" value="${state.user.rate}" step="0.1" class="w-full bg-stone-950 border border-stone-800 p-4 text-white font-mono text-xl focus:border-amber-500 transition-colors">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderMortality() {
+    const totalWeeks = Math.round(state.user.death * 52);
+    const weeksLived = Math.round(state.user.age * 52);
+    const weeksHealthy = Math.round(state.user.healthy * 52);
+    
+    let grid = '';
+    for (let i = 0; i < totalWeeks; i++) {
+        let color;
+        if (i < weeksLived) color = '#374151';
+        else if (i < weeksHealthy) color = '#06b6d4';
+        else color = 'rgba(127, 29, 29, 0.5)';
+        
+        grid += `<div class="life-week" style="background-color: ${color}" title="Week ${i + 1} • Age ${(i / 52).toFixed(1)}"></div>`;
+    }
+    
+    return `
+        <div class="max-w-4xl mx-auto space-y-8 fade-in">
+            <header>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-stone-100">Your Life in Weeks</h2>
+                <p class="text-stone-500 font-mono text-sm">Each square = 1 week of your life</p>
+            </header>
+
+            <div class="flex justify-center gap-6 text-xs">
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-gray-700 rounded"></div>
+                    <span>Lived</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-cyan-500 rounded"></div>
+                    <span>Healthy</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 bg-red-900/50 rounded"></div>
+                    <span>Borrowed</span>
+                </div>
+            </div>
+
+            <div class="bg-stone-900 border border-stone-800 p-6">
+                <div class="flex flex-wrap justify-center max-w-3xl mx-auto">
+                    ${grid}
+                </div>
+            </div>
+
+            <div class="bg-stone-800/50 p-6 border-l-4 border-cyan-500">
+                <p class="text-stone-400 italic">"Time is the only currency that matters, and you're trading it at a loss." — Chapter 2</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderTimebank() {
+    return `
+        <div class="max-w-4xl mx-auto space-y-12 fade-in">
+            <header>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-white">Time Bank</h2>
+                <p class="text-stone-500 font-mono text-sm uppercase">Currency Converter: Money → Life</p>
+            </header>
+
+            <!-- Purchase Calculator -->
+            <div class="bg-stone-900 border border-stone-800 p-8 space-y-6">
+                <h3 class="text-sm font-bold uppercase tracking-widest text-amber-500">Cost of Living Calculator</h3>
+                
+                <div class="flex gap-4">
+                    <input type="number" id="purchaseCost" placeholder="Item Cost (£)" class="flex-1 bg-stone-950 border border-stone-800 p-4 text-white font-mono text-lg focus:border-amber-500">
+                    <button onclick="calculatePurchase()" class="bg-stone-100 hover:bg-white text-black font-bold px-8 uppercase tracking-widest text-xs transition-colors">Convert</button>
+                </div>
+
+                <div id="purchaseResult" class="hidden bg-stone-950 p-6 border-l-4 border-amber-500">
+                    <div class="grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-[10px] uppercase text-stone-500 tracking-widest">Hours</p>
+                            <p class="text-3xl font-mono text-amber-500" id="resultHours">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase text-stone-500 tracking-widest">Days</p>
+                            <p class="text-3xl font-mono text-white" id="resultDays">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase text-stone-500 tracking-widest">% of Life</p>
+                            <p class="text-3xl font-mono text-red-400" id="resultPercent">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Freedom Fund -->
+            <div class="bg-stone-900 border border-stone-800 p-8 space-y-6">
+                <h3 class="text-sm font-bold uppercase tracking-widest text-stone-400">Freedom Fund Status</h3>
+                
+                <div class="space-y-4">
+                    <div class="flex justify-between text-sm font-mono">
+                        <span class="text-stone-500">SAVED: £${state.user.savings.toLocaleString()}</span>
+                        <span class="text-stone-500">TARGET: £${(state.user.monthlyExpenses * 6).toLocaleString()}</span>
+                    </div>
+                    <div class="h-4 w-full bg-stone-950 rounded overflow-hidden border border-stone-800">
+                        <div class="h-full bg-green-900" style="width: ${Math.min((getFreedomMonths() / 6) * 100, 100)}%"></div>
+                    </div>
+                    <div class="p-4 bg-stone-950 border border-stone-800 text-center">
+                        <p class="text-2xl font-mono text-white">${getFreedomMonths()} <span class="text-sm text-stone-500">MONTHS OF SOVEREIGNTY</span></p>
+                        <p class="text-xs text-stone-600 mt-2 uppercase">You can walk away for ${getFreedomMonths()} months.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderDebt() {
+    const debtPerSecond = (state.user.debt * (state.user.rate / 100)) / (365.25 * 24 * 60 * 60);
+    
+    return `
+        <div class="max-w-4xl mx-auto space-y-8 fade-in">
+            <header>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-white">The Debt Parasite</h2>
+                <p class="text-stone-500 font-mono text-sm">Live Growth Counter</p>
+            </header>
+
+            <div class="bg-stone-900 border border-red-900/30 p-8 text-center space-y-6">
+                <div>
+                    <div class="text-5xl font-bold text-red-400 mb-2">£${state.user.debt.toLocaleString()}</div>
+                    <div class="text-xs text-gray-400">Current debt balance</div>
+                </div>
+                
+                <div class="bg-red-950/30 p-4 rounded-lg">
+                    <div class="text-lg text-red-300 pulse-glow">+£<span id="debtGrown">0.00</span></div>
+                    <div class="text-xs text-gray-500 mt-1">has grown since you opened this page</div>
+                </div>
+                
+                <div class="text-sm text-gray-400">
+                    At <span class="text-yellow-400">${state.user.rate}%</span> interest, your debt grows <span class="text-red-400">£${debtPerSecond.toFixed(3)}</span>/second
+                </div>
+            </div>
+
+            <div class="bg-stone-800/50 p-6 border-l-4 border-yellow-500">
+                <p class="text-stone-400 italic">"When you borrow money, you're not borrowing money. You're borrowing time from the end of your life." — Chapter 3</p>
+            </div>
+        </div>
+    `;
+}
+
+function renderSubscriptions() {
+    const totalCost = state.subscriptions.filter(s => !s.killed).reduce((sum, s) => sum + s.cost, 0);
+    const totalKilled = state.subscriptions.filter(s => s.killed).reduce((sum, s) => sum + s.cost, 0);
+    const hoursPerYear = state.user.wage > 0 ? (totalCost * 12) / state.user.wage : 0;
+    const killedDays = state.user.wage > 0 ? ((totalKilled * 12) / state.user.wage) / 16.5 : 0;
+    
+    let subsList = '';
+    state.subscriptions.forEach((sub, i) => {
+        if (!sub.killed) {
+            subsList += `
+                <div class="flex justify-between items-center p-3 bg-stone-900 rounded">
+                    <div class="flex-1">
+                        <div class="font-bold text-sm">${sub.name}</div>
+                        <div class="text-xs text-gray-500">£${sub.cost}/month</div>
+                    </div>
+                    <button onclick="killSub(${i})" class="kill-btn bg-red-600 hover:bg-red-500 px-3 py-1 rounded text-xs font-bold">KILL</button>
+                </div>
+            `;
+        }
+    });
+    
+    return `
+        <div class="max-w-4xl mx-auto space-y-8 fade-in">
+            <header>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-white">Subscription Assassin</h2>
+                <p class="text-stone-500 font-mono text-sm">Kill the Leeches</p>
+            </header>
+
+            <div class="bg-stone-900 border border-stone-800 p-8">
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="subName" placeholder="Subscription name" class="flex-1 bg-stone-950 border border-stone-800 rounded px-3 py-2 text-sm">
+                    <input type="number" id="subCost" placeholder="£/month" class="w-24 bg-stone-950 border border-stone-800 rounded px-3 py-2 text-sm">
+                    <button onclick="addSub()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded text-sm font-bold transition-colors">ADD</button>
+                </div>
+                
+                <div class="space-y-2 mb-4">${subsList || '<p class="text-stone-500 text-center py-8 text-sm">No active subscriptions</p>'}</div>
+                
+                <div class="bg-gray-900/50 p-4 rounded-lg text-center">
+                    <div class="text-xs text-gray-400 mb-1">TOTAL MONTHLY DRAIN</div>
+                    <div class="text-3xl font-bold text-red-400">£${totalCost.toFixed(2)}</div>
+                    <div class="text-xs text-gray-500 mt-1">= ${hoursPerYear.toFixed(0)} hours/year</div>
+                </div>
+                
+                <div class="bg-emerald-950/30 p-4 rounded-lg text-center mt-4">
+                    <div class="text-xs text-gray-400 mb-1">LIFE RECLAIMED BY KILLING SUBS</div>
+                    <div class="text-2xl font-bold text-emerald-400">${killedDays.toFixed(1)} days</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderMorning() {
+    const checks = [
+        { id: 'wake5am', label: 'Wake at 5:00 AM', sub: 'Before the shift. Before the demands.' },
+        { id: 'coffee', label: 'The Sacred Coffee', sub: 'Make it slow. Smell the grounds.' },
+        { id: 'silence', label: 'One Song on Loop', sub: 'No lyrics. No narrative. Just rhythm.' },
+        { id: 'noPhone', label: 'No Phone Zone', sub: 'Until the coffee is done. Non-negotiable.' }
+    ];
+    
+    let html = '';
+    checks.forEach(item => {
+        const checked = state.morningChecklist[item.id];
+        html += `
+            <button onclick="toggleMorning('${item.id}')" class="w-full text-left p-6 border transition-all ${checked ? 'bg-stone-900 border-amber-900' : 'bg-transparent border-stone-800 hover:border-stone-700'}">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold uppercase tracking-widest text-sm ${checked ? 'text-amber-500' : 'text-stone-300'}">${item.label}</h3>
+                        <p class="text-xs text-stone-600 mt-1">${item.sub}</p>
+                    </div>
+                    <div class="w-6 h-6 border rounded-sm flex items-center justify-center ${checked ? 'bg-amber-500 border-amber-500 text-black' : 'border-stone-700'}">
+                        ${checked ? '⚡' : ''}
+                    </div>
+                </div>
+            </button>
+        `;
+    });
+    
+    return `
+        <div class="max-w-md mx-auto space-y-12 fade-in">
+            <div class="text-center space-y-2">
+                <div class="text-5xl">⚡</div>
+                <h2 class="text-2xl font-black uppercase tracking-tighter text-white">The Morning Anchor</h2>
+                <p class="text-stone-500 text-xs font-mono uppercase">The Zero-Cost Monastery</p>
+            </div>
+
+            <div class="space-y-4">${html}</div>
+
+            <div class="bg-stone-900 p-6 border-l-4 border-stone-700">
+                <p class="font-serif italic text-stone-400 text-sm">
+                    "If you wake up at 7:30 to be at work by 8, you have no buffer. You're starting the day in survival mode. But if you wake up at 5am, you have two and a half hours to be sovereign."
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function renderAltar() {
+    const items = [
+        { id: 'eggs', label: '2 Eggs', icon: '🥚' },
+        { id: 'apple', label: '1 Apple', icon: '🍎' },
+        { id: 'water', label: 'Water', icon: '💧' }
+    ];
+    
+    let html = '';
+    items.forEach(item => {
+        const checked = state.altarChecklist[item.id];
+        html += `
+            <button onclick="toggleAltar('${item.id}')" class="aspect-square flex flex-col items-center justify-center gap-2 border transition-all ${checked ? 'bg-stone-900 border-blue-900 opacity-100' : 'bg-transparent border-stone-800 opacity-50 hover:opacity-80'}">
+                <span class="text-3xl">${item.icon}</span>
+                <span class="text-[10px] uppercase tracking-widest font-bold ${checked ? 'text-blue-400' : 'text-stone-500'}">${item.label}</span>
+            </button>
+        `;
+    });
+    
+    return `
+        <div class="max-w-md mx-auto space-y-12 fade-in">
+            <div class="text-center space-y-2">
+                <div class="text-5xl">💧</div>
+                <h2 class="text-2xl font-black uppercase tracking-tighter text-white">The Altar</h2>
+                <p class="text-stone-500 text-xs font-mono uppercase">Fuel Consciousness, Not Survival</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">${html}</div>
+
+            <div class="space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-stone-500 border-b border-stone-800 pb-2">The Rules of the Kitchen</h3>
+                <ul class="space-y-3 text-sm text-stone-300 font-mono">
+                    <li class="flex gap-3">❌ No Mascots (If it has a cartoon, it's poison)</li>
+                    <li class="flex gap-3">❌ No Slogans (Real food doesn't need marketing)</li>
+                    <li class="flex gap-3">❌ No Plastic (If possible)</li>
+                    <li class="flex gap-3 text-amber-500">⚡ Cook with Presence (Don't scroll while stirring)</li>
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function renderReader() {
+    const chapters = [
+        { title: "Prologue: The Theft", text: "It's hard to live these days. You trade forty hours a week just to exist... We are God on minimum wage, trying to remember we were infinite." },
+        { title: "The Pulse of Time", text: "Time is the gift. If everything was infinite and whole, and it wanted to experience itself, it would have to split in half... Time's the miracle." },
+        { title: "Wage Theory", text: "Money isn't real. It's a token for time. A pound in 1920 is worth 5p now. Inflation is the systematic devaluation of your hours." },
+        { title: "The Death Pledge", text: "Mortgage means 'Death Pledge'. Debt is borrowed time from the end of your life. Every loan is a bill that arrives in the future." },
+        { title: "Attention Heist", text: "They don't want your money first. They want your attention. The feed is not neutral. It's harvesting you." },
+        { title: "Chemical Fog", text: "They need you dull. Survival mode makes you predictable. Real food fuels consciousness. Eat an egg. Eat an apple." },
+        { title: "The Invisible Cage", text: "The cage has been unlocked the whole time. You built the bars with your 'No'. Freedom starts when you stop waiting for permission." },
+        { title: "Morning Anchor", text: "The morning is sovereign territory. Wake at 5am. Coffee. Silence. No phone. Win the day before it starts." },
+        { title: "Altar of the Kitchen", text: "If the body is the temple, the kitchen is the altar. Cooking is a ritual of purification. Simple food. Sacred geometry." },
+        { title: "Tidy Room", text: "If your room is chaos, your mind is debt. Order outside = order inside. Fold the shirt. Wash the dish. Close the loop." },
+        { title: "Power of Now", text: "The only moment is Now. Anxiety is time-traveling. The working-class Buddha doesn't transcend the bus stop, they notice it." },
+        { title: "Equality", text: "No one is your genuine superior. Not the boss. Not the royal. Same biology. Same observer. Stop shrinking." },
+        { title: "Buying Days", text: "Freedom is a number. Calculate it. Save for it. Money buys time. Time doesn't depreciate." },
+        { title: "Winning at Work", text: "Work is a transaction. Take every break. Leave on time. Don't donate your life to a company that would replace you in a week." },
+        { title: "Temple of the Pub", text: "The pub is the last non-transactional space. Solidarity isn't a banner, it's a table. You're not alone in the grind." },
+        { title: "Altar of Boredom", text: "Boredom is the crucible. It forces you to create. Watch the sunset. Fix the shoe. Notice the graffiti." }
+    ];
+    
+    let html = '';
+    chapters.forEach((ch, i) => {
+        html += `
+            <div class="border border-stone-800 bg-stone-900/30">
+                <button onclick="toggleChapter(${i})" class="w-full flex items-center justify-between p-4 hover:bg-stone-900 transition-colors">
+                    <span class="text-sm font-bold uppercase tracking-wider text-stone-300 text-left">${ch.title}</span>
+                    <span class="chapter-arrow">▶</span>
+                </button>
+                <div id="chapter${i}" class="chapter-content hidden p-6 pt-0 border-t border-stone-800/50">
+                    <p class="font-serif text-lg leading-loose text-stone-400 mt-4">"${ch.text}"</p>
+                </div>
+            </div>
+        `;
+    });
+    
+    return `
+        <div class="max-w-2xl mx-auto space-y-8 fade-in">
+            <header class="text-center pb-8 border-b border-stone-800">
+                <div class="text-5xl mb-4">📖</div>
+                <h2 class="text-3xl font-black uppercase tracking-tighter text-white">The Manuscript</h2>
+                <p class="text-stone-500 font-mono text-xs uppercase tracking-widest">Enlightenment on Minimum Wage</p>
+            </header>
+
+            <div class="space-y-2">${html}</div>
+        </div>
+    `;
+}
+
+function renderTemple() {
+    return `
+        <div class="max-w-xl mx-auto space-y-12 fade-in">
+            <div class="text-center space-y-2">
+                <div class="text-5xl">🍺</div>
+                <h2 class="text-2xl font-black uppercase tracking-tighter text-white">The Temple</h2>
+                <p class="text-stone-500 text-xs font-mono uppercase">Connection & Boredom</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-stone-900 border border-stone-800 p-6 space-y-4">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-amber-500">The Pub Protocol</h3>
+                    <ul class="space-y-3 text-xs text-stone-400 font-mono">
+                        <li>1. Phone face down. Silent.</li>
+                        <li>2. Buy a round. Don't keep score.</li>
+                        <li>3. Don't perform. Just exist.</li>
+                        <li>4. No networking. Just communion.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-stone-900 border border-stone-800 p-6 space-y-4">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-blue-400">Altar of Boredom</h3>
+                    <p class="text-xs text-stone-500 mb-4">When broke, boredom is the only luxury. Do not scroll.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 p-2 border border-stone-800">
+                            <div class="w-3 h-3 border border-stone-600 rounded-full"></div>
+                            <span class="text-xs uppercase tracking-wide text-stone-300">Watch a sunset (Full duration)</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 border border-stone-800">
+                            <div class="w-3 h-3 border border-stone-600 rounded-full"></div>
+                            <span class="text-xs uppercase tracking-wide text-stone-300">Mend clothing</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 border border-stone-800">
+                            <div class="w-3 h-3 border border-stone-600 rounded-full"></div>
+                            <span class="text-xs uppercase tracking-wide text-stone-300">Walk without destination</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-2 border border-stone-800">
+                            <div class="w-3 h-3 border border-stone-600 rounded-full"></div>
+                            <span class="text-xs uppercase tracking-wide text-stone-300">Notice graffiti</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================================================
+// EVENT HANDLERS
+// ============================================================================
+
+function attachEventListeners(view) {
+    if (view === 'passport') {
+        ['age', 'death', 'healthy', 'wage', 'monthlyExpenses', 'savings', 'debt', 'rate'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', (e) => {
+                    state.user[id] = parseFloat(e.target.value) || 0;
+                    saveState();
+                });
+            }
+        });
+    }
+    
+    if (view === 'debt') {
+        startDebtCounter();
+    }
+}
+
+window.navigate = function(view) {
+    document.querySelector(`[data-view="${view}"]`).click();
+};
+
+window.calculatePurchase = function() {
+    const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
+    if (cost > 0 && state.user.wage > 0) {
+        const hours = cost / state.user.wage;
+        const days = hours / 16.5;
+        const totalHealthyHours = getHealthyHours();
+        const percent = totalHealthyHours > 0 ? (hours / totalHealthyHours) * 100 : 0;
+        
+        document.getElementById('resultHours').textContent = hours.toFixed(1);
+        document.getElementById('resultDays').textContent = days.toFixed(1);
+        document.getElementById('resultPercent').textContent = percent.toFixed(4) + '%';
+        document.getElementById('purchaseResult').classList.remove('hidden');
+    }
+};
+
+window.addSub = function() {
+    const name = document.getElementById('subName').value.trim();
+    const cost = parseFloat(document.getElementById('subCost').value) || 0;
+    
+    if (name && cost > 0) {
+        state.subscriptions.push({ name, cost, killed: false });
+        saveState();
+        renderView('subscriptions');
+    }
+};
+
+window.killSub = function(index) {
+    state.subscriptions[index].killed = true;
+    saveState();
+    renderView('subscriptions');
+};
+
+window.toggleMorning = function(key) {
+    state.morningChecklist[key] = !state.morningChecklist[key];
+    saveState();
+    renderView('morning');
+};
+
+window.toggleAltar = function(key) {
+    state.altarChecklist[key] = !state.altarChecklist[key];
+    saveState();
+    renderView('altar');
+};
+
+window.toggleChapter = function(index) {
+    const content = document.getElementById('chapter' + index);
+    content.classList.toggle('hidden');
+};
+
+let debtInterval;
+function startDebtCounter() {
+    if (debtInterval) clearInterval(debtInterval);
+    
+    const debtPerSecond = (state.user.debt * (state.user.rate / 100)) / (365.25 * 24 * 60 * 60);
+    const startTime = Date.now();
+    
+    debtInterval = setInterval(() => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        const grown = debtPerSecond * elapsed;
+        const el = document.getElementById('debtGrown');
+        if (el) el.textContent = grown.toFixed(2);
+    }, 100);
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+
+// Set initial active nav item
+document.querySelector(`[data-view="${state.currentView}"]`).click();
+
+// Update sidebar wage on load
+updateSidebarWage();
+</script>
+
+</body>
+</html>
